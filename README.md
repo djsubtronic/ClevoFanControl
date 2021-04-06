@@ -24,7 +24,7 @@ Currently the app is very basic. It has 10 preset temperature units. Under 40 C,
 
 All releases can be found on the project release page: https://github.com/djsubtronic/ClevoFanControl/releases
 
-**Installation
+**Installation**
 
 1. Download and install the NTPort driver from here: https://github.com/djsubtronic/ClevoFanControl/blob/master/ClevoFanControl/NTPortDrvSetup.exe
 2. Download the latest release from the project release page, extract to a folder of your choice. The app will start minimised in the notification area.
