@@ -3,6 +3,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenHardwareMonitor.Hardware;
 
@@ -12,6 +14,8 @@ namespace ClevoFanControl {
 
         private const int SLEEP_TIME_BETWEEN_MEASUREMENTS = 2000;
         int timerTickCount = 0;
+        int cpuFanRampIntervals = 5;
+        int gpuFanRampIntervals = 5;
 
         private IFanControl fan;
         private static Computer computer;
@@ -27,8 +31,13 @@ namespace ClevoFanControl {
 
         int currentCpuTemp;
         int currentGpuTemp;
+        int prevCpuTemp;
+        int prevGpuTemp;
         int currentCpuFan;
         int currentGpuFan;
+
+        int cpuSameTempTicks = 0;
+        int gpuSameTempTicks = 0;
 
         FanTable defaultCpuFanTable;
         FanTable defaultGpuFanTable;
@@ -95,7 +104,7 @@ namespace ClevoFanControl {
             LoadFanTableAndConfig();
 
             SetSliderValuesFromTable();
-            
+
             prgCPUFan.Width = 0;
             prgGPUFan.Width = 0;
 
@@ -119,28 +128,36 @@ namespace ClevoFanControl {
             currentCpuFan = CalcFanPercentage("CPU", currentCpuTemp);
             currentGpuFan = CalcFanPercentage("GPU", currentGpuTemp);
 
-            if (currentCpuTemp >= 80 && currentGpuTemp >= 80) {
+            if (currentCpuTemp > 85 && currentGpuTemp >= 85) {
                 currentCpuFan = 100;
                 currentGpuFan = 100;
             }
 
-            if (currentCpuFan != prevFanCPUPercentage) {
+            if (currentCpuFan != prevFanCPUPercentage || timerTickCount * tmrMain.Interval * 0.001 >= 60) {
                 fan?.SetFanSpeed(1, currentCpuFan);
+                //RampFanSpeed(1, currentCpuFan);
                 prevFanCPUPercentage = currentCpuFan;
+                cpuSameTempTicks = 0;
             }
 
-            if (currentGpuFan != prevFanGPUPercentage) {
+            if (currentGpuFan != prevFanGPUPercentage || timerTickCount * tmrMain.Interval * 0.001 >= 60) {
                 fan?.SetFanSpeed(2, currentGpuFan);
+                //RampFanSpeed(2, currentCpuFan);
                 prevFanGPUPercentage = currentGpuFan;
-            }
-
-            timerTickCount++;
-            if (timerTickCount == 100) {
-                //GC.Collect();
-                timerTickCount = 0;
+                gpuSameTempTicks = 0;
             }
 
             UpdateGui();
+
+            timerTickCount++;
+            if (timerTickCount * tmrMain.Interval * 0.001 > 60) {
+                GC.Collect();
+                timerTickCount = 0;
+            }
+
+            prevCpuTemp = currentCpuTemp;
+            prevGpuTemp = currentGpuTemp;
+
         }
 
         private int CalcFanPercentage(string device, int currentTemp) {
@@ -231,9 +248,12 @@ namespace ClevoFanControl {
                 try {
                     cpuSensor = wmiSearcher.Get().OfType<ManagementObject>().FirstOrDefault();
                     int currTemp = (Convert.ToInt32(cpuSensor["CurrentTemperature"]) - 2732) / 10;
-                    GC.Collect();
+                    //GC.Collect();
                     return currTemp;
-                } catch (ManagementException e) { }
+                } catch {
+                    return prevCpuTemp;
+                }
+
 
             } else if (device == "GPU") {
 
@@ -255,6 +275,31 @@ namespace ClevoFanControl {
         private void SetFansToMaximum() {
             fan?.SetFanSpeed(1, 100);
             fan?.SetFanSpeed(2, 100);
+            //RampFanSpeed(1, 100);
+            //RampFanSpeed(2, 100);
+        }
+
+        private void RampFanSpeed(int FanNumber, int FanSpeed) {
+            if (FanNumber == 1) {
+                int rampPercentage = (FanSpeed - prevFanCPUPercentage) / cpuFanRampIntervals;
+                Parallel.For(1, cpuFanRampIntervals, i => {
+                    fan?.SetFanSpeed(1, prevFanCPUPercentage + (i * rampPercentage));
+                    Thread.Sleep(100);
+                });
+                //for (int i = 1; i <= cpuFanRampIntervals; i++) {
+                //    fan?.SetFanSpeed(1, prevFanCPUPercentage + (i * rampPercentage));
+                //    Thread.Sleep(100);
+                //}
+            } else if (FanNumber == 2) {
+                int rampPercentage = (FanSpeed - prevFanGPUPercentage) / gpuFanRampIntervals;
+                Parallel.For(1, gpuFanRampIntervals, i => {
+                    fan?.SetFanSpeed(2, prevFanGPUPercentage + (i * rampPercentage));
+                    Thread.Sleep(100);
+                });
+                //for (int i = 1; i <= gpuFanRampIntervals; i++) {
+                //    Thread.Sleep(100);
+                //}
+            }
         }
 
         private void UpdateGui() {
@@ -439,29 +484,33 @@ namespace ClevoFanControl {
 
             var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
 
-            using (var sw = new StreamWriter(path + "userfancurve.cfg")) {
+            if (btnProfileManual.Checked) {
 
-                sw.WriteLine(userCpuFanTable.Fan40);
-                sw.WriteLine(userCpuFanTable.Fan45);
-                sw.WriteLine(userCpuFanTable.Fan50);
-                sw.WriteLine(userCpuFanTable.Fan55);
-                sw.WriteLine(userCpuFanTable.Fan60);
-                sw.WriteLine(userCpuFanTable.Fan65);
-                sw.WriteLine(userCpuFanTable.Fan70);
-                sw.WriteLine(userCpuFanTable.Fan75);
-                sw.WriteLine(userCpuFanTable.Fan80);
-                sw.WriteLine(userCpuFanTable.Fan85);
+                using (var sw = new StreamWriter(path + "userfancurve.cfg")) {
 
-                sw.WriteLine(userGpuFanTable.Fan40);
-                sw.WriteLine(userGpuFanTable.Fan45);
-                sw.WriteLine(userGpuFanTable.Fan50);
-                sw.WriteLine(userGpuFanTable.Fan55);
-                sw.WriteLine(userGpuFanTable.Fan60);
-                sw.WriteLine(userGpuFanTable.Fan65);
-                sw.WriteLine(userGpuFanTable.Fan70);
-                sw.WriteLine(userGpuFanTable.Fan75);
-                sw.WriteLine(userGpuFanTable.Fan80);
-                sw.WriteLine(userGpuFanTable.Fan85);
+                    sw.WriteLine(userCpuFanTable.Fan40);
+                    sw.WriteLine(userCpuFanTable.Fan45);
+                    sw.WriteLine(userCpuFanTable.Fan50);
+                    sw.WriteLine(userCpuFanTable.Fan55);
+                    sw.WriteLine(userCpuFanTable.Fan60);
+                    sw.WriteLine(userCpuFanTable.Fan65);
+                    sw.WriteLine(userCpuFanTable.Fan70);
+                    sw.WriteLine(userCpuFanTable.Fan75);
+                    sw.WriteLine(userCpuFanTable.Fan80);
+                    sw.WriteLine(userCpuFanTable.Fan85);
+
+                    sw.WriteLine(userGpuFanTable.Fan40);
+                    sw.WriteLine(userGpuFanTable.Fan45);
+                    sw.WriteLine(userGpuFanTable.Fan50);
+                    sw.WriteLine(userGpuFanTable.Fan55);
+                    sw.WriteLine(userGpuFanTable.Fan60);
+                    sw.WriteLine(userGpuFanTable.Fan65);
+                    sw.WriteLine(userGpuFanTable.Fan70);
+                    sw.WriteLine(userGpuFanTable.Fan75);
+                    sw.WriteLine(userGpuFanTable.Fan80);
+                    sw.WriteLine(userGpuFanTable.Fan85);
+
+                }
 
             }
 
@@ -487,7 +536,7 @@ namespace ClevoFanControl {
             }
 
         }
-            private void ShowWindow() {
+        private void ShowWindow() {
             Show();
             WindowState = FormWindowState.Normal;
             ShowInTaskbar = true;
@@ -518,9 +567,11 @@ namespace ClevoFanControl {
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-            e.Cancel = true;
-            WindowState = FormWindowState.Minimized;
-            ShowInTaskbar = false;
+            if (e.CloseReason != CloseReason.WindowsShutDown) {
+                e.Cancel = true;
+                WindowState = FormWindowState.Minimized;
+                ShowInTaskbar = false;
+            }
         }
 
         private void mnuExit_Click(object sender, EventArgs e) {

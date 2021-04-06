@@ -1330,6 +1330,7 @@ namespace ClevoFanControl {
             this.btnProfileManual.Name = "btnProfileManual";
             this.btnProfileManual.Size = new System.Drawing.Size(160, 30);
             this.btnProfileManual.TabIndex = 3;
+            this.btnProfileManual.TabStop = true;
             this.btnProfileManual.Text = "Manual";
             this.btnProfileManual.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.btnProfileManual.UseVisualStyleBackColor = true;

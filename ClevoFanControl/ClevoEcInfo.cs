@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace ClevoFanControl {
@@ -16,7 +17,7 @@ namespace ClevoFanControl {
         }
 
         private void Init() {
-            pDll = NativeMethods.LoadLibrary(@"ClevoEcInfo.dll");
+            pDll = NativeMethods.LoadLibrary(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\ClevoEcInfo.dll");
             if (pDll == IntPtr.Zero) throw new Exception("Can't load ClevoEcInfo.dll");
 
             pInitIo = NativeMethods.GetProcAddress(pDll, "InitIo");
