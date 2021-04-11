@@ -18,7 +18,9 @@ Currently the app is very basic. It has 10 preset temperature units. Under 40 C,
 - No ramping speeds, the fan speed changes instantly
 - The "Clevo Default" profile is just a profile I have created within the code that mimics Clevo's default fan curve for my model (exception being that <40 C will still turn the fans off). It is NOT handing control back to the EC, and the fans are still always controlled by the application until you exit.
 - I'm not sure the code to hand over fan control back to the EC upon exit, so as a safety precaution if you exit the app it will automatically set the fans to 100%. You can use Fn+1 to go back to EC controlled fan after the app has closed.
-- If CPU and GPU temp both exceed 85 C at the same time, the fans will automatically be set to 100%
+- If GPU exceed 80 C, both CPU and GPU fans will automatically be set to 100%
+- Needs to be run as Admin for CPU temperature detection to work
+- NTPort library might give you an error message during the installation, but this can be ignored as the driver will still be installed
 
 **Download Precompiled Releases**
 
