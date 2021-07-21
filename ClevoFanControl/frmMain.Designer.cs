@@ -42,8 +42,10 @@ namespace ClevoFanControl {
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlCPUStats = new System.Windows.Forms.Panel();
+            this.lblCPUMaxTemp = new System.Windows.Forms.Label();
             this.imgStatIntel = new System.Windows.Forms.PictureBox();
             this.pnlGPUStats = new System.Windows.Forms.Panel();
+            this.lblGPUMaxTemp = new System.Windows.Forms.Label();
             this.imgStatNvidia = new System.Windows.Forms.PictureBox();
             this.lblGPUHeader = new System.Windows.Forms.Label();
             this.lblGPUTemp = new System.Windows.Forms.Label();
@@ -130,6 +132,9 @@ namespace ClevoFanControl {
             this.lblProfilesHeader = new System.Windows.Forms.Label();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnAlwaysOnTop = new System.Windows.Forms.CheckBox();
+            this.btnACFans = new System.Windows.Forms.CheckBox();
+            this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.tmrHighCpuDelay = new System.Windows.Forms.Timer(this.components);
             this.mnuMain.SuspendLayout();
             this.pnlCPUStats.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgStatIntel)).BeginInit();
@@ -299,6 +304,7 @@ namespace ClevoFanControl {
             // pnlCPUStats
             // 
             this.pnlCPUStats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlCPUStats.Controls.Add(this.lblCPUMaxTemp);
             this.pnlCPUStats.Controls.Add(this.imgStatIntel);
             this.pnlCPUStats.Controls.Add(this.lblCPUHeader);
             this.pnlCPUStats.Controls.Add(this.lblCPUTemp);
@@ -308,6 +314,20 @@ namespace ClevoFanControl {
             this.pnlCPUStats.Name = "pnlCPUStats";
             this.pnlCPUStats.Size = new System.Drawing.Size(135, 130);
             this.pnlCPUStats.TabIndex = 11;
+            // 
+            // lblCPUMaxTemp
+            // 
+            this.lblCPUMaxTemp.Font = new System.Drawing.Font("Open Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCPUMaxTemp.ForeColor = System.Drawing.Color.Black;
+            this.lblCPUMaxTemp.Location = new System.Drawing.Point(5, 77);
+            this.lblCPUMaxTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCPUMaxTemp.Name = "lblCPUMaxTemp";
+            this.lblCPUMaxTemp.Size = new System.Drawing.Size(123, 20);
+            this.lblCPUMaxTemp.TabIndex = 11;
+            this.lblCPUMaxTemp.Text = "Max: 0";
+            this.lblCPUMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.tipTooltip.SetToolTip(this.lblCPUMaxTemp, "Click to reset CPU max temperature");
+            this.lblCPUMaxTemp.Click += new System.EventHandler(this.lblCPUMaxTemp_Click);
             // 
             // imgStatIntel
             // 
@@ -322,6 +342,7 @@ namespace ClevoFanControl {
             // pnlGPUStats
             // 
             this.pnlGPUStats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlGPUStats.Controls.Add(this.lblGPUMaxTemp);
             this.pnlGPUStats.Controls.Add(this.imgStatNvidia);
             this.pnlGPUStats.Controls.Add(this.lblGPUHeader);
             this.pnlGPUStats.Controls.Add(this.lblGPUTemp);
@@ -331,6 +352,20 @@ namespace ClevoFanControl {
             this.pnlGPUStats.Name = "pnlGPUStats";
             this.pnlGPUStats.Size = new System.Drawing.Size(135, 130);
             this.pnlGPUStats.TabIndex = 12;
+            // 
+            // lblGPUMaxTemp
+            // 
+            this.lblGPUMaxTemp.Font = new System.Drawing.Font("Open Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGPUMaxTemp.ForeColor = System.Drawing.Color.Black;
+            this.lblGPUMaxTemp.Location = new System.Drawing.Point(5, 77);
+            this.lblGPUMaxTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblGPUMaxTemp.Name = "lblGPUMaxTemp";
+            this.lblGPUMaxTemp.Size = new System.Drawing.Size(123, 20);
+            this.lblGPUMaxTemp.TabIndex = 10;
+            this.lblGPUMaxTemp.Text = "Max: 0";
+            this.lblGPUMaxTemp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.tipTooltip.SetToolTip(this.lblGPUMaxTemp, "Click to reset GPU max temperature");
+            this.lblGPUMaxTemp.Click += new System.EventHandler(this.lblGPUMaxTemp_Click);
             // 
             // imgStatNvidia
             // 
@@ -1377,11 +1412,27 @@ namespace ClevoFanControl {
             this.btnAlwaysOnTop.AutoSize = true;
             this.btnAlwaysOnTop.Location = new System.Drawing.Point(12, 561);
             this.btnAlwaysOnTop.Name = "btnAlwaysOnTop";
-            this.btnAlwaysOnTop.Size = new System.Drawing.Size(122, 30);
+            this.btnAlwaysOnTop.Size = new System.Drawing.Size(119, 30);
             this.btnAlwaysOnTop.TabIndex = 15;
-            this.btnAlwaysOnTop.Text = "Always On Top";
+            this.btnAlwaysOnTop.Text = "Always on Top";
             this.btnAlwaysOnTop.UseVisualStyleBackColor = true;
             this.btnAlwaysOnTop.CheckedChanged += new System.EventHandler(this.btnAlwaysOnTop_CheckedChanged);
+            // 
+            // btnACFans
+            // 
+            this.btnACFans.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnACFans.AutoSize = true;
+            this.btnACFans.Location = new System.Drawing.Point(140, 561);
+            this.btnACFans.Name = "btnACFans";
+            this.btnACFans.Size = new System.Drawing.Size(124, 30);
+            this.btnACFans.TabIndex = 16;
+            this.btnACFans.Text = "Min 30% on AC";
+            this.btnACFans.UseVisualStyleBackColor = true;
+            // 
+            // tmrHighCpuDelay
+            // 
+            this.tmrHighCpuDelay.Interval = 2500;
+            this.tmrHighCpuDelay.Tick += new System.EventHandler(this.tmrHighCpuDelay_Tick);
             // 
             // frmMain
             // 
@@ -1389,6 +1440,7 @@ namespace ClevoFanControl {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(603, 602);
+            this.Controls.Add(this.btnACFans);
             this.Controls.Add(this.btnAlwaysOnTop);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.pnlProfiles);
@@ -1563,6 +1615,11 @@ namespace ClevoFanControl {
         private System.Windows.Forms.ToolStripSeparator mnuSeparator2;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.CheckBox btnAlwaysOnTop;
+        private System.Windows.Forms.CheckBox btnACFans;
+        private System.Windows.Forms.Label lblCPUMaxTemp;
+        private System.Windows.Forms.Label lblGPUMaxTemp;
+        private System.Windows.Forms.ToolTip tipTooltip;
+        private System.Windows.Forms.Timer tmrHighCpuDelay;
     }
 }
 
