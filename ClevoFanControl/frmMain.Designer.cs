@@ -135,6 +135,12 @@ namespace ClevoFanControl {
             this.btnACFans = new System.Windows.Forms.CheckBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.tmrHighCpuDelay = new System.Windows.Forms.Timer(this.components);
+            this.lblCpuSafetyTemp = new System.Windows.Forms.Label();
+            this.lblCpuSafetyTemp2 = new System.Windows.Forms.Label();
+            this.txtCpuSafetyTemp = new System.Windows.Forms.NumericUpDown();
+            this.txtGpuSafetyTemp = new System.Windows.Forms.NumericUpDown();
+            this.lblGpuSafetyTemp2 = new System.Windows.Forms.Label();
+            this.lblGpuSafetyTemp = new System.Windows.Forms.Label();
             this.mnuMain.SuspendLayout();
             this.pnlCPUStats.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgStatIntel)).BeginInit();
@@ -171,6 +177,8 @@ namespace ClevoFanControl {
             ((System.ComponentModel.ISupportInitialize)(this.barGPU45)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barGPU40)).BeginInit();
             this.pnlProfiles.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCpuSafetyTemp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtGpuSafetyTemp)).BeginInit();
             this.SuspendLayout();
             // 
             // lblCPUHeader
@@ -710,7 +718,7 @@ namespace ClevoFanControl {
             this.lblIndicatorCPU85.Name = "lblIndicatorCPU85";
             this.lblIndicatorCPU85.Size = new System.Drawing.Size(45, 20);
             this.lblIndicatorCPU85.TabIndex = 19;
-            this.lblIndicatorCPU85.Text = "85°";
+            this.lblIndicatorCPU85.Text = "90°";
             this.lblIndicatorCPU85.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblIndicatorCPU80
@@ -1397,7 +1405,7 @@ namespace ClevoFanControl {
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(456, 561);
+            this.btnExit.Location = new System.Drawing.Point(456, 599);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(135, 30);
             this.btnExit.TabIndex = 14;
@@ -1410,7 +1418,7 @@ namespace ClevoFanControl {
             // 
             this.btnAlwaysOnTop.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnAlwaysOnTop.AutoSize = true;
-            this.btnAlwaysOnTop.Location = new System.Drawing.Point(12, 561);
+            this.btnAlwaysOnTop.Location = new System.Drawing.Point(12, 599);
             this.btnAlwaysOnTop.Name = "btnAlwaysOnTop";
             this.btnAlwaysOnTop.Size = new System.Drawing.Size(119, 30);
             this.btnAlwaysOnTop.TabIndex = 15;
@@ -1422,7 +1430,7 @@ namespace ClevoFanControl {
             // 
             this.btnACFans.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnACFans.AutoSize = true;
-            this.btnACFans.Location = new System.Drawing.Point(140, 561);
+            this.btnACFans.Location = new System.Drawing.Point(137, 599);
             this.btnACFans.Name = "btnACFans";
             this.btnACFans.Size = new System.Drawing.Size(124, 30);
             this.btnACFans.TabIndex = 16;
@@ -1434,12 +1442,90 @@ namespace ClevoFanControl {
             this.tmrHighCpuDelay.Interval = 2500;
             this.tmrHighCpuDelay.Tick += new System.EventHandler(this.tmrHighCpuDelay_Tick);
             // 
+            // lblCpuSafetyTemp
+            // 
+            this.lblCpuSafetyTemp.AutoSize = true;
+            this.lblCpuSafetyTemp.Location = new System.Drawing.Point(12, 568);
+            this.lblCpuSafetyTemp.Name = "lblCpuSafetyTemp";
+            this.lblCpuSafetyTemp.Size = new System.Drawing.Size(127, 20);
+            this.lblCpuSafetyTemp.TabIndex = 17;
+            this.lblCpuSafetyTemp.Text = "CPU safety temp:";
+            // 
+            // lblCpuSafetyTemp2
+            // 
+            this.lblCpuSafetyTemp2.AutoSize = true;
+            this.lblCpuSafetyTemp2.Location = new System.Drawing.Point(180, 568);
+            this.lblCpuSafetyTemp2.Name = "lblCpuSafetyTemp2";
+            this.lblCpuSafetyTemp2.Size = new System.Drawing.Size(15, 20);
+            this.lblCpuSafetyTemp2.TabIndex = 20;
+            this.lblCpuSafetyTemp2.Text = "°";
+            // 
+            // txtCpuSafetyTemp
+            // 
+            this.txtCpuSafetyTemp.Location = new System.Drawing.Point(137, 566);
+            this.txtCpuSafetyTemp.Minimum = new decimal(new int[] {
+            80,
+            0,
+            0,
+            0});
+            this.txtCpuSafetyTemp.Name = "txtCpuSafetyTemp";
+            this.txtCpuSafetyTemp.Size = new System.Drawing.Size(45, 28);
+            this.txtCpuSafetyTemp.TabIndex = 21;
+            this.txtCpuSafetyTemp.Value = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
+            this.txtCpuSafetyTemp.ValueChanged += new System.EventHandler(this.txtCpuSafetyTemp_ValueChanged);
+            // 
+            // txtGpuSafetyTemp
+            // 
+            this.txtGpuSafetyTemp.Location = new System.Drawing.Point(330, 566);
+            this.txtGpuSafetyTemp.Minimum = new decimal(new int[] {
+            80,
+            0,
+            0,
+            0});
+            this.txtGpuSafetyTemp.Name = "txtGpuSafetyTemp";
+            this.txtGpuSafetyTemp.Size = new System.Drawing.Size(45, 28);
+            this.txtGpuSafetyTemp.TabIndex = 24;
+            this.txtGpuSafetyTemp.Value = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
+            this.txtGpuSafetyTemp.ValueChanged += new System.EventHandler(this.txtGpuSafetyTemp_ValueChanged);
+            // 
+            // lblGpuSafetyTemp2
+            // 
+            this.lblGpuSafetyTemp2.AutoSize = true;
+            this.lblGpuSafetyTemp2.Location = new System.Drawing.Point(373, 568);
+            this.lblGpuSafetyTemp2.Name = "lblGpuSafetyTemp2";
+            this.lblGpuSafetyTemp2.Size = new System.Drawing.Size(15, 20);
+            this.lblGpuSafetyTemp2.TabIndex = 23;
+            this.lblGpuSafetyTemp2.Text = "°";
+            // 
+            // lblGpuSafetyTemp
+            // 
+            this.lblGpuSafetyTemp.AutoSize = true;
+            this.lblGpuSafetyTemp.Location = new System.Drawing.Point(205, 568);
+            this.lblGpuSafetyTemp.Name = "lblGpuSafetyTemp";
+            this.lblGpuSafetyTemp.Size = new System.Drawing.Size(129, 20);
+            this.lblGpuSafetyTemp.TabIndex = 22;
+            this.lblGpuSafetyTemp.Text = "GPU safety temp:";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(603, 602);
+            this.ClientSize = new System.Drawing.Size(603, 641);
+            this.Controls.Add(this.txtGpuSafetyTemp);
+            this.Controls.Add(this.lblGpuSafetyTemp2);
+            this.Controls.Add(this.lblGpuSafetyTemp);
+            this.Controls.Add(this.txtCpuSafetyTemp);
+            this.Controls.Add(this.lblCpuSafetyTemp2);
+            this.Controls.Add(this.lblCpuSafetyTemp);
             this.Controls.Add(this.btnACFans);
             this.Controls.Add(this.btnAlwaysOnTop);
             this.Controls.Add(this.btnExit);
@@ -1504,6 +1590,8 @@ namespace ClevoFanControl {
             ((System.ComponentModel.ISupportInitialize)(this.barGPU40)).EndInit();
             this.pnlProfiles.ResumeLayout(false);
             this.pnlProfiles.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCpuSafetyTemp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtGpuSafetyTemp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1620,6 +1708,12 @@ namespace ClevoFanControl {
         private System.Windows.Forms.Label lblGPUMaxTemp;
         private System.Windows.Forms.ToolTip tipTooltip;
         private System.Windows.Forms.Timer tmrHighCpuDelay;
+        private System.Windows.Forms.Label lblCpuSafetyTemp;
+        private System.Windows.Forms.Label lblCpuSafetyTemp2;
+        private System.Windows.Forms.NumericUpDown txtCpuSafetyTemp;
+        private System.Windows.Forms.NumericUpDown txtGpuSafetyTemp;
+        private System.Windows.Forms.Label lblGpuSafetyTemp2;
+        private System.Windows.Forms.Label lblGpuSafetyTemp;
     }
 }
 
