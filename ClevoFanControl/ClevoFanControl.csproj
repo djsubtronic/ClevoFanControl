@@ -39,10 +39,10 @@
   <PropertyGroup>
     <ApplicationIcon>clevofancontrol.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenHardwareMonitorLib, Version=0.7.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenHardwareMonitor.0.7.1\lib\net40\OpenHardwareMonitorLib.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
@@ -82,7 +82,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="packages.config" />
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -105,6 +105,12 @@
     <None Include="clevofancontrol.png" />
     <None Include="nvidia.png" />
     <None Include="intel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CurveEditorControl\CurveEditorControl\CurveEditorControl.csproj">
+      <Project>{d4097969-063d-4da1-b1f0-72eaf109f8c7}</Project>
+      <Name>CurveEditorControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

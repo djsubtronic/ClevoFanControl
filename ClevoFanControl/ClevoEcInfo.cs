@@ -8,9 +8,11 @@ namespace ClevoFanControl {
         IntPtr pInitIo;
         IntPtr pGetTempFanDuty;
         IntPtr pSetFanDuty;
+        IntPtr pSetFanDutyAuto;
         InitIo initIo;
         GetTempFanDuty getTempFanDuty;
         SetFanDuty2 setFanDuty;
+        SetFanDutyAuto setFanDutyAuto;
 
         public ClevoEcInfo() {
             Init();
@@ -23,12 +25,14 @@ namespace ClevoFanControl {
             pInitIo = NativeMethods.GetProcAddress(pDll, "InitIo");
             pGetTempFanDuty = NativeMethods.GetProcAddress(pDll, "GetTempFanDuty");
             pSetFanDuty = NativeMethods.GetProcAddress(pDll, "SetFanDuty");
-            if (pInitIo == IntPtr.Zero || pGetTempFanDuty == IntPtr.Zero || pSetFanDuty == IntPtr.Zero) throw new Exception("Can't find methods");
+            pSetFanDutyAuto = NativeMethods.GetProcAddress(pDll, "SetFanDutyAuto");
+            if (pInitIo == IntPtr.Zero || pGetTempFanDuty == IntPtr.Zero || pSetFanDuty == IntPtr.Zero || pSetFanDutyAuto == IntPtr.Zero) throw new Exception("Can't find methods");
 
 
             initIo = (InitIo)Marshal.GetDelegateForFunctionPointer(pInitIo, typeof(InitIo));
             getTempFanDuty = (GetTempFanDuty)Marshal.GetDelegateForFunctionPointer(pGetTempFanDuty, typeof(GetTempFanDuty));
             setFanDuty = (SetFanDuty2)Marshal.GetDelegateForFunctionPointer(pSetFanDuty, typeof(SetFanDuty2));
+            setFanDutyAuto = (SetFanDutyAuto)Marshal.GetDelegateForFunctionPointer(pSetFanDutyAuto, typeof(SetFanDutyAuto));
 
             bool theResult = initIo();
         }
@@ -40,6 +44,11 @@ namespace ClevoFanControl {
         public void SetFanSpeed(int fanNr, int fanSpeedPercentage) {
             setFanDuty(fanNr, fanSpeedPercentage * 255 / 100);
         }
+
+        public void SetFansAuto(int fanNr) {
+            setFanDutyAuto(fanNr);
+        }
+
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -65,6 +74,10 @@ namespace ClevoFanControl {
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void SetFanDuty2(int p1, int p2);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void SetFanDutyAuto(int p1);
+
     }
 
     [StructLayout(LayoutKind.Sequential)]

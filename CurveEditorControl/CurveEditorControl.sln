@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
+VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClevoFanControl", "ClevoFanControl\ClevoFanControl.csproj", "{4C97EFF4-BB6B-49FE-88FB-6479EDD94831}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurveEditorControl", "CurveEditorControl\CurveEditorControl\CurveEditorControl.csproj", "{D4097969-063D-4DA1-B1F0-72EAF109F8C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurveEditorControl", "CurveEditorControl\CurveEditorControl.csproj", "{D4097969-063D-4DA1-B1F0-72EAF109F8C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4C97EFF4-BB6B-49FE-88FB-6479EDD94831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C97EFF4-BB6B-49FE-88FB-6479EDD94831}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C97EFF4-BB6B-49FE-88FB-6479EDD94831}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C97EFF4-BB6B-49FE-88FB-6479EDD94831}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D4097969-063D-4DA1-B1F0-72EAF109F8C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D4097969-063D-4DA1-B1F0-72EAF109F8C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4097969-063D-4DA1-B1F0-72EAF109F8C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -26,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {14E631CC-780C-4665-8770-EC2476FCDD4A}
+		SolutionGuid = {742C5D4D-FBE1-4BD3-9753-1083ADE5233D}
 	EndGlobalSection
 EndGlobal

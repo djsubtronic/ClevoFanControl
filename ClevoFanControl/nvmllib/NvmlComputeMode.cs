@@ -1,0 +1,11 @@
+namespace Nvidia.Nvml
+{
+    public enum NvmlComputeMode
+    {
+        NVML_COMPUTEMODE_DEFAULT = 0,
+        NVML_COMPUTEMODE_EXCLUSIVE_THREAD,
+        NVML_COMPUTEMODE_PROHIBITED,
+        NVML_COMPUTEMODE_EXCLUSIVE_PROCESS,
+        NVML_COMPUTEMODE_COUNT
+    }
+}
