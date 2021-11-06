@@ -86,6 +86,7 @@ namespace ClevoFanControl {
             this.lblGpuSafetyTemp2 = new System.Windows.Forms.Label();
             this.lblGpuSafetyTemp = new System.Windows.Forms.Label();
             this.btnGpuBattMonitor = new System.Windows.Forms.CheckBox();
+            this.tmrGui = new System.Windows.Forms.Timer(this.components);
             this.mnuMain.SuspendLayout();
             this.pnlCPUStats.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgStatIntel)).BeginInit();
@@ -782,12 +783,17 @@ namespace ClevoFanControl {
             this.btnGpuBattMonitor.UseVisualStyleBackColor = true;
             this.btnGpuBattMonitor.CheckedChanged += new System.EventHandler(this.btnGpuBattMonitor_CheckedChanged);
             // 
+            // tmrGui
+            // 
+            this.tmrGui.Enabled = true;
+            this.tmrGui.Interval = 1000;
+            this.tmrGui.Tick += new System.EventHandler(this.tmrGui_Tick);
+            // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(603, 641);
+            this.ClientSize = new System.Drawing.Size(609, 657);
             this.Controls.Add(this.btnGpuBattMonitor);
             this.Controls.Add(this.txtGpuSafetyTemp);
             this.Controls.Add(this.lblGpuSafetyTemp2);
@@ -906,6 +912,7 @@ namespace ClevoFanControl {
         private System.Windows.Forms.ToolStripMenuItem mnuProfile50;
         private CurveEditorControl.PlotCanvasContainer cpuPlot;
         private CurveEditorControl.PlotCanvasContainer gpuPlot;
+        private System.Windows.Forms.Timer tmrGui;
     }
 }
 

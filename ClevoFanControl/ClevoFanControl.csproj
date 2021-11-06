@@ -101,7 +101,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="clevofancontrol.ico" />
-    <Content Include="NTPortDrvSetup.exe" />
+    <Content Include="NTPortDrvSetup.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="clevofancontrol.png" />
     <None Include="nvidia.png" />
     <None Include="intel.png" />

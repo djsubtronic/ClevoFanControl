@@ -12,7 +12,8 @@ using System.Windows.Forms;
 namespace ClevoFanControl {
     public partial class frmMain : Form {
 
-        private const int SLEEP_TIME_BETWEEN_MEASUREMENTS = 1000; // GUI/monitoring updates at this rate, fan speed update at double this interval
+        private const int EC_POLL_INTERVAL = 3000; // interval to poll EC
+        
         int timerTickCount = 0;
         int cpuFanRampIntervals = 5;
         int gpuFanRampIntervals = 5;
@@ -67,7 +68,7 @@ namespace ClevoFanControl {
         int gpuBattTicks = 0;
         bool gpuBattMonitor = false;
 
-        bool fanUpdateTick = false;
+        //bool fanUpdateTick = false;
 
         public frmMain() {
             InitializeComponent();
@@ -142,9 +143,13 @@ namespace ClevoFanControl {
             //cpuHardware = computer.Hardware[0];
             //gpuHardware = computer.Hardware[1];
 
-            tmrMain.Interval = SLEEP_TIME_BETWEEN_MEASUREMENTS;
+            tmrMain.Interval = EC_POLL_INTERVAL;
             tmrMain.Enabled = true;
 
+            WindowState = FormWindowState.Minimized;
+            ShowInTaskbar = false;
+            FormBorderStyle = FormBorderStyle.None;
+            Visible = false;
         }
 
         private void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
@@ -154,7 +159,7 @@ namespace ClevoFanControl {
 
         private void tmrMain_Tick(object sender, EventArgs e) {
 
-            fanUpdateTick = !fanUpdateTick;
+            //fanUpdateTick = !fanUpdateTick;
 
             // Get CPU temperature and set fan speed
             currentCpuTemp = GetCurrentTemperature("CPU");
@@ -197,7 +202,7 @@ namespace ClevoFanControl {
             //    currentCpuFan = currentGpuFan;
             //}
 
-            if (!clevoAutoFans && fanUpdateTick) {
+            if (!clevoAutoFans) {
                 if (currentCpuFan != prevFanCPUPercentage || timerTickCount * tmrMain.Interval * 0.001 >= 60) {
                     //if (prevCpuTemp < 80 && currentCpuTemp >= 80) {
                     //    if (highCpuDelayFinished) {
@@ -223,10 +228,6 @@ namespace ClevoFanControl {
                     gpuSameTempTicks = 0;
                 }
             }
-
-            UpdateGui();
-            cpuPlot.UpdatePlot();
-            gpuPlot.UpdatePlot();
 
             timerTickCount++;
             if (timerTickCount * tmrMain.Interval * 0.001 > 60) {
@@ -330,6 +331,11 @@ namespace ClevoFanControl {
 
             if (device == "CPU") {
                 var cpuTemp = fan?.GetECData(1).Remote;
+                if (cpuTemp <= 100) {
+                    prevCpuTemp = (Int32)cpuTemp;
+                } else {
+                    return prevCpuTemp;
+                }
                 return (Int32)cpuTemp;
 
                 //try {
@@ -346,6 +352,11 @@ namespace ClevoFanControl {
             } else if (device == "GPU") {
 
                 var gpuTemp = fan?.GetECData(2).Remote;
+                if (gpuTemp <= 100) {
+                    prevGpuTemp = (Int32)gpuTemp;
+                } else {
+                    return prevGpuTemp;
+                }
                 return (Int32)gpuTemp;
 
                 //try {
@@ -407,6 +418,9 @@ namespace ClevoFanControl {
         private void UpdateGui() {
 
             if (WindowState != FormWindowState.Minimized) {
+
+                cpuPlot.UpdatePlot();
+                gpuPlot.UpdatePlot();
 
                 lblCPUTemp.Text = currentCpuTemp + "°";
                 lblCPUFan.Text = currentCpuFan + "%";
@@ -746,6 +760,8 @@ namespace ClevoFanControl {
                 e.Cancel = true;
                 WindowState = FormWindowState.Minimized;
                 ShowInTaskbar = false;
+                FormBorderStyle = FormBorderStyle.None;
+                Visible = false;
             }
         }
 
@@ -871,14 +887,14 @@ namespace ClevoFanControl {
                 //cpuFanTable = defaultCpuFanTable;
                 //gpuFanTable = defaultGpuFanTable;
                 ////tabFanCurves.Enabled = false;
-                //mnuProfileManual.Checked = false;
-                //mnuProfileDefault.Checked = true;
-                //mnuProfileMax.Checked = false;
-                //mnuProfile50.Checked = false;
                 //tmrMain.Enabled = false;
                 fan?.SetFansAuto(0);
                 fan?.SetFansAuto(1);
                 fan?.SetFansAuto(2);
+                mnuProfileManual.Checked = false;
+                mnuProfileDefault.Checked = true;
+                mnuProfileMax.Checked = false;
+                mnuProfile50.Checked = false;
                 clevoAutoFans = true;
             }
         }
@@ -932,6 +948,10 @@ namespace ClevoFanControl {
                 lastWTop = Top;
                 SetSliderValuesFromTable();
                 SaveFanTableAndConfig();
+                ShowInTaskbar = true;
+                FormBorderStyle = FormBorderStyle.FixedSingle;
+                Size = new Size(620, 680);
+                Visible = true;
             }
         }
         private void btnExit_Click(object sender, EventArgs e) {
@@ -1016,6 +1036,10 @@ namespace ClevoFanControl {
             gpuFanTable.Fan85 = e.PlotValues[9];
 
             SaveFanTableAndConfig();
+        }
+
+        private void tmrGui_Tick(object sender, EventArgs e) {
+            UpdateGui();
         }
     }
 
