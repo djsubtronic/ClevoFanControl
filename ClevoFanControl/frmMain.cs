@@ -419,8 +419,8 @@ namespace ClevoFanControl {
 
             if (WindowState != FormWindowState.Minimized) {
 
-                cpuPlot.UpdatePlot();
-                gpuPlot.UpdatePlot();
+                //cpuPlot.UpdatePlot();
+                //gpuPlot.UpdatePlot();
 
                 lblCPUTemp.Text = currentCpuTemp + "°";
                 lblCPUFan.Text = currentCpuFan + "%";
@@ -524,7 +524,7 @@ namespace ClevoFanControl {
             cpuPlot.Value08 = userCpuFanTable.Fan75;
             cpuPlot.Value09 = userCpuFanTable.Fan80;
             cpuPlot.Value10 = userCpuFanTable.Fan85;
-            cpuPlot.UpdatePlot();
+            //cpuPlot.UpdatePlot();
 
             //barGPU40.Value = userGpuFanTable.Fan40;
             //barGPU45.Value = userGpuFanTable.Fan45;
@@ -556,7 +556,7 @@ namespace ClevoFanControl {
             gpuPlot.Value08 = userGpuFanTable.Fan75;
             gpuPlot.Value09 = userGpuFanTable.Fan80;
             gpuPlot.Value10 = userGpuFanTable.Fan85;
-            gpuPlot.UpdatePlot();
+            //gpuPlot.UpdatePlot();
 
 
         }

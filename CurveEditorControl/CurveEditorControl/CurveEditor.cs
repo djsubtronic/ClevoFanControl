@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace CurveEditorControl
 {
-    public partial class PlotCanvasContainer: UserControl
+    public partial class PlotCanvasContainer : UserControl
     {
         public PlotCanvasContainer()
         {
@@ -65,13 +65,14 @@ namespace CurveEditorControl
 
         public int[] currentPercentages = new int[10];
 
-        
+
         public bool PlotMouseDown = false;
         Bitmap plotbg = new Bitmap(508, PlotHeight);
 
         public event Action<object, PlotChangedEventArgs> PlotChanged;
-        
-        private void PlotCanvasContainer_Load(object sender, EventArgs e) {
+
+        private void PlotCanvasContainer_Load(object sender, EventArgs e)
+        {
             var graphXPoints = new GraphXPoints();
 
             graphPoints[0] = graphXPoints.Point1;
@@ -86,108 +87,117 @@ namespace CurveEditorControl
             graphPoints[9] = graphXPoints.Point10;
 
             using (Graphics gfx = Graphics.FromImage(plotbg))
-            using (SolidBrush brush = new SolidBrush(Color.Gainsboro)) {
+            using (SolidBrush brush = new SolidBrush(Color.Gainsboro))
+            {
                 gfx.FillRectangle(brush, 0, 0, 508, PlotHeight);
             }
         }
 
-        private void PlotCanvas_MouseDown(object sender, MouseEventArgs e) {
+        private void PlotCanvas_MouseDown(object sender, MouseEventArgs e)
+        {
             PlotMouseDown = true;
         }
 
-        private void PlotCanvas_MouseUp(object sender, MouseEventArgs e) {
+        private void PlotCanvas_MouseUp(object sender, MouseEventArgs e)
+        {
             PlotMouseDown = false;
             var eArgs = new PlotChangedEventArgs();
             eArgs.PlotValues = currentPercentages;
             PlotChanged(sender, eArgs);
         }
 
-        private void PlotCanvas_MouseMove(object sender, MouseEventArgs e) {
-            if (PlotMouseDown) {
+        private void PlotCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (PlotMouseDown)
+            {
                 var nearestX = GetNearestXPoint(e.X);
                 var index = GetIndexFromXPoint(nearestX);
                 var perc = GetPercentageFromYPoint(e.Y);
 
-                if (perc < 0) {
+                if (perc < 0)
+                {
                     perc = 0;
-                } else if (perc > 100) {
+                }
+                else if (perc > 100)
+                {
                     perc = 100;
                 }
 
                 currentPercentages[index] = perc;
-                UpdatePlot();
+                PlotCanvas.Invalidate();
             }
         }
 
-        private void PlotCanvas_Paint(object sender, PaintEventArgs e) {
-            if (PlotMouseDown) {
-                UpdatePlot();
+        private void PlotCanvas_Paint(object sender, PaintEventArgs e)
+        {
+            Pen p = new Pen(Color.LightGray, 1);
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            e.Graphics.DrawImage(plotbg, 0, 0);
+            e.Graphics.DrawLine(p, new Point(graphPoints[0], 0), new Point(graphPoints[0], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[1], 0), new Point(graphPoints[1], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[2], 0), new Point(graphPoints[2], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[3], 0), new Point(graphPoints[3], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[4], 0), new Point(graphPoints[4], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[5], 0), new Point(graphPoints[5], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[6], 0), new Point(graphPoints[6], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[7], 0), new Point(graphPoints[7], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[8], 0), new Point(graphPoints[8], PlotHeight));
+            e.Graphics.DrawLine(p, new Point(graphPoints[9], 0), new Point(graphPoints[9], PlotHeight));
+            Pen p2 = new Pen(Color.Gray, 2);
+            for (int i = 1; i < 10; i++)
+            {
+                e.Graphics.DrawLine(p2, new Point(graphPoints[i], GetYPosFromPercentage(currentPercentages[i])), new Point(graphPoints[i - 1], GetYPosFromPercentage(currentPercentages[i - 1])));
             }
+
+            for (int i = 0; i < 10; i++)
+            {
+                e.Graphics.FillEllipse(Brushes.Black, new Rectangle(graphPoints[i] - 4, GetYPosFromPercentage(currentPercentages[i]) - 4, 8, 8));
+            }
+
+            lblValue1.Text = currentPercentages[0] + "%";
+            lblValue2.Text = currentPercentages[1] + "%";
+            lblValue3.Text = currentPercentages[2] + "%";
+            lblValue4.Text = currentPercentages[3] + "%";
+            lblValue5.Text = currentPercentages[4] + "%";
+            lblValue6.Text = currentPercentages[5] + "%";
+            lblValue7.Text = currentPercentages[6] + "%";
+            lblValue8.Text = currentPercentages[7] + "%";
+            lblValue9.Text = currentPercentages[8] + "%";
+            lblValue10.Text = currentPercentages[9] + "%";
         }
 
-        public void UpdatePlot() {            
-            using (var e = PlotCanvas.CreateGraphics()) {
-                e.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                e.DrawImage(plotbg, 0, 0);
-                Pen p = new Pen(Color.LightGray, 1);
-                e.DrawLine(p, new Point(graphPoints[0], 0), new Point(graphPoints[0], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[1], 0), new Point(graphPoints[1], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[2], 0), new Point(graphPoints[2], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[3], 0), new Point(graphPoints[3], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[4], 0), new Point(graphPoints[4], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[5], 0), new Point(graphPoints[5], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[6], 0), new Point(graphPoints[6], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[7], 0), new Point(graphPoints[7], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[8], 0), new Point(graphPoints[8], PlotHeight));
-                e.DrawLine(p, new Point(graphPoints[9], 0), new Point(graphPoints[9], PlotHeight));
-                Pen p2 = new Pen(Color.Gray, 2);
-                for (int i = 1; i < 10; i++) {
-                    e.DrawLine(p2, new Point(graphPoints[i], GetYPosFromPercentage(currentPercentages[i])), new Point(graphPoints[i - 1], GetYPosFromPercentage(currentPercentages[i - 1])));
-                }
-
-                for (int i = 0; i < 10; i++) {
-                    e.FillEllipse(Brushes.Black, new Rectangle(graphPoints[i] - 4, GetYPosFromPercentage(currentPercentages[i]) - 4, 8, 8));
-                }
-
-                lblValue1.Text = currentPercentages[0] + "%";
-                lblValue2.Text = currentPercentages[1] + "%";
-                lblValue3.Text = currentPercentages[2] + "%";
-                lblValue4.Text = currentPercentages[3] + "%";
-                lblValue5.Text = currentPercentages[4] + "%";
-                lblValue6.Text = currentPercentages[5] + "%";
-                lblValue7.Text = currentPercentages[6] + "%";
-                lblValue8.Text = currentPercentages[7] + "%";
-                lblValue9.Text = currentPercentages[8] + "%";
-                lblValue10.Text = currentPercentages[9] + "%";
-            }
-        }
-
-            public int GetYPosFromPercentage(float Percent) {
+        public int GetYPosFromPercentage(float Percent)
+        {
             var ypos = (Percent / 100) * PlotHeight;
             return PlotHeight - (int)ypos;
         }
 
-        public int GetPercentageFromYPoint(float Y) {
+        public int GetPercentageFromYPoint(float Y)
+        {
             var perc = (Y / PlotHeight) * 100;
             return 100 - (int)perc;
         }
 
-        public int GetNearestXPoint(int X) {
+        public int GetNearestXPoint(int X)
+        {
             var nearest = graphPoints.OrderBy(x => Math.Abs((long)x - X)).First();
             return (int)nearest;
         }
 
-        public int GetIndexFromXPoint(int X) {
+        public int GetIndexFromXPoint(int X)
+        {
             var nearest = Array.IndexOf(graphPoints, GetNearestXPoint(X));
             return nearest;
         }
 
-        private void lblValue1_Click(object sender, EventArgs e) {
-            UpdatePlot();
+        private void lblValue1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
-    public class GraphXPoints {
+    public class GraphXPoints
+    {
         public int Point1 = 23;
         public int Point2 = 23 + (int)(1 * 51.5);
         public int Point3 = 23 + (int)(2 * 51.5);
@@ -200,7 +210,8 @@ namespace CurveEditorControl
         public int Point10 = 23 + (int)(9 * 51.5);
     }
 
-    public class PlotChangedEventArgs : EventArgs {
+    public class PlotChangedEventArgs : EventArgs
+    {
         public int[] PlotValues { get; set; }
     }
 }

@@ -78,7 +78,6 @@ namespace ClevoFanControl {
             this.btnAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.btnACFans = new System.Windows.Forms.CheckBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.tmrHighCpuDelay = new System.Windows.Forms.Timer(this.components);
             this.lblCpuSafetyTemp = new System.Windows.Forms.Label();
             this.lblCpuSafetyTemp2 = new System.Windows.Forms.Label();
             this.txtCpuSafetyTemp = new System.Windows.Forms.NumericUpDown();
@@ -184,63 +183,63 @@ namespace ClevoFanControl {
             this.mnuAbout,
             this.mnuExit});
             this.mnuMain.Name = "mnuMain";
-            this.mnuMain.Size = new System.Drawing.Size(183, 170);
+            this.mnuMain.Size = new System.Drawing.Size(182, 170);
             // 
             // mnuShowWindow
             // 
             this.mnuShowWindow.Name = "mnuShowWindow";
-            this.mnuShowWindow.Size = new System.Drawing.Size(182, 22);
+            this.mnuShowWindow.Size = new System.Drawing.Size(181, 22);
             this.mnuShowWindow.Text = "&Show Window";
             this.mnuShowWindow.Click += new System.EventHandler(this.mnuShowWindow_Click);
             // 
             // mnuSeparator1
             // 
             this.mnuSeparator1.Name = "mnuSeparator1";
-            this.mnuSeparator1.Size = new System.Drawing.Size(179, 6);
+            this.mnuSeparator1.Size = new System.Drawing.Size(178, 6);
             // 
             // mnuProfileManual
             // 
             this.mnuProfileManual.Name = "mnuProfileManual";
-            this.mnuProfileManual.Size = new System.Drawing.Size(182, 22);
+            this.mnuProfileManual.Size = new System.Drawing.Size(181, 22);
             this.mnuProfileManual.Text = "Manual Profile";
             this.mnuProfileManual.Click += new System.EventHandler(this.mnuProfileManual_Click);
             // 
             // mnuProfileDefault
             // 
             this.mnuProfileDefault.Name = "mnuProfileDefault";
-            this.mnuProfileDefault.Size = new System.Drawing.Size(182, 22);
+            this.mnuProfileDefault.Size = new System.Drawing.Size(181, 22);
             this.mnuProfileDefault.Text = "Clevo Default Profile";
             this.mnuProfileDefault.Click += new System.EventHandler(this.mnuProfileDefault_Click);
             // 
             // mnuProfile50
             // 
             this.mnuProfile50.Name = "mnuProfile50";
-            this.mnuProfile50.Size = new System.Drawing.Size(182, 22);
+            this.mnuProfile50.Size = new System.Drawing.Size(181, 22);
             this.mnuProfile50.Text = "50% Speed Profile";
             this.mnuProfile50.Click += new System.EventHandler(this.mnuProfile50_Click);
             // 
             // mnuProfileMax
             // 
             this.mnuProfileMax.Name = "mnuProfileMax";
-            this.mnuProfileMax.Size = new System.Drawing.Size(182, 22);
+            this.mnuProfileMax.Size = new System.Drawing.Size(181, 22);
             this.mnuProfileMax.Text = "Maximum Profile";
             this.mnuProfileMax.Click += new System.EventHandler(this.mnuProfileMax_Click);
             // 
             // mnuSeparator2
             // 
             this.mnuSeparator2.Name = "mnuSeparator2";
-            this.mnuSeparator2.Size = new System.Drawing.Size(179, 6);
+            this.mnuSeparator2.Size = new System.Drawing.Size(178, 6);
             // 
             // mnuAbout
             // 
             this.mnuAbout.Name = "mnuAbout";
-            this.mnuAbout.Size = new System.Drawing.Size(182, 22);
+            this.mnuAbout.Size = new System.Drawing.Size(181, 22);
             this.mnuAbout.Text = "&About";
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(182, 22);
+            this.mnuExit.Size = new System.Drawing.Size(181, 22);
             this.mnuExit.Text = "E&xit";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
@@ -692,11 +691,6 @@ namespace ClevoFanControl {
             this.btnACFans.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.btnACFans.UseVisualStyleBackColor = true;
             // 
-            // tmrHighCpuDelay
-            // 
-            this.tmrHighCpuDelay.Interval = 2500;
-            this.tmrHighCpuDelay.Tick += new System.EventHandler(this.tmrHighCpuDelay_Tick);
-            // 
             // lblCpuSafetyTemp
             // 
             this.lblCpuSafetyTemp.AutoSize = true;
@@ -900,7 +894,6 @@ namespace ClevoFanControl {
         private System.Windows.Forms.Label lblCPUMaxTemp;
         private System.Windows.Forms.Label lblGPUMaxTemp;
         private System.Windows.Forms.ToolTip tipTooltip;
-        private System.Windows.Forms.Timer tmrHighCpuDelay;
         private System.Windows.Forms.Label lblCpuSafetyTemp;
         private System.Windows.Forms.Label lblCpuSafetyTemp2;
         private System.Windows.Forms.NumericUpDown txtCpuSafetyTemp;
