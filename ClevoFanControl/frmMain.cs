@@ -6,6 +6,7 @@ using System.Management;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Win32.TaskScheduler;
 //using OpenHardwareMonitor.Hardware;
 
 
@@ -133,6 +134,7 @@ namespace ClevoFanControl {
             gpuFanTable = defaultGpuFanTable;
 
             LoadFanTableAndConfig();
+            CheckAutoStartState();
 
             SetSliderValuesFromTable();
 
@@ -666,6 +668,35 @@ namespace ClevoFanControl {
 
         }
 
+        private void CheckAutoStartState(){
+            using (TaskService ts = new TaskService())
+            {
+                Microsoft.Win32.TaskScheduler.Task task = ts.GetTask("ClevoFanControl");
+                if (task == null){
+                    mnuAutostart.Checked = false;
+                    return;
+                }
+                else
+                {
+                    if (!task.IsActive){
+                        mnuAutostart.Checked = false;
+                        return;
+                    }
+                    foreach(Microsoft.Win32.TaskScheduler.Action a in task.Definition.Actions){
+                        if(a.ActionType == TaskActionType.Execute){
+                            Microsoft.Win32.TaskScheduler.ExecAction exec = (Microsoft.Win32.TaskScheduler.ExecAction)a;
+                            if (exec.Path == Application.ExecutablePath){
+                                    mnuAutostart.Checked = true;
+                                    return;
+                            }
+                        }
+                    }
+                }
+                mnuAutostart.Checked = false;
+                return;
+            }
+        }
+
         private void SaveFanTableAndConfig() {
 
             var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\";
@@ -727,6 +758,42 @@ namespace ClevoFanControl {
             WindowState = FormWindowState.Normal;
             ShowInTaskbar = true;
         }
+
+        private void AutoStartToggle(){
+            using (TaskService ts = new TaskService())
+            {
+                if (mnuAutostart.Checked == false)
+                {
+                    ts.RootFolder.DeleteTask("ClevoFanControl",false);
+                    // Create a new task definition and assign properties
+                    TaskDefinition td = ts.NewTask();
+                    td.RegistrationInfo.Description = "ClevoFanControl auto start.";
+
+                    // Create a trigger
+                    td.Triggers.Add(new LogonTrigger());
+                    string exe_path = Application.ExecutablePath;
+
+                    // Create an action that will launch ClevoFanControl
+                    td.Actions.Add(new ExecAction(exe_path, null));
+                    // Start on battety used
+                    td.Settings.DisallowStartIfOnBatteries = false;
+
+                    // Run with highest privilege
+                    td.Principal.RunLevel = TaskRunLevel.Highest;
+
+
+                    // Register the task in the root folder
+                    ts.RootFolder.RegisterTaskDefinition("ClevoFanControl", td);
+                    mnuAutostart.Checked = true;
+                }
+                else
+                {
+                    ts.RootFolder.DeleteTask("ClevoFanControl", false);
+                    mnuAutostart.Checked = false;
+                }
+            }
+        }
+
         private void ExitApp() {
             tmrMain.Enabled = false;
             //computer.Close();
@@ -773,6 +840,10 @@ namespace ClevoFanControl {
             ShowWindow();
         }
 
+        private void mnuAutostart_Click(object sender, EventArgs e)
+        {
+            AutoStartToggle();
+        }
         private void icoTray_DoubleClick(object sender, EventArgs e) {
             ShowWindow();
         }
