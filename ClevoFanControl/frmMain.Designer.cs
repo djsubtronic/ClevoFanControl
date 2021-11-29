@@ -40,6 +40,7 @@ namespace ClevoFanControl {
             this.mnuProfile50 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuProfileMax = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuAutostart = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlCPUStats = new System.Windows.Forms.Panel();
@@ -180,10 +181,11 @@ namespace ClevoFanControl {
             this.mnuProfile50,
             this.mnuProfileMax,
             this.mnuSeparator2,
+            this.mnuAutostart,
             this.mnuAbout,
             this.mnuExit});
             this.mnuMain.Name = "mnuMain";
-            this.mnuMain.Size = new System.Drawing.Size(182, 170);
+            this.mnuMain.Size = new System.Drawing.Size(182, 192);
             // 
             // mnuShowWindow
             // 
@@ -229,6 +231,13 @@ namespace ClevoFanControl {
             // 
             this.mnuSeparator2.Name = "mnuSeparator2";
             this.mnuSeparator2.Size = new System.Drawing.Size(178, 6);
+            //
+            // mnuAutostart
+            // 
+            this.mnuAutostart.Name = "mnuAutostart";
+            this.mnuAutostart.Size = new System.Drawing.Size(181, 22);
+            this.mnuAutostart.Text = "Auto Start";
+            this.mnuAutostart.Click += new System.EventHandler(this.mnuAutostart_Click);
             // 
             // mnuAbout
             // 
@@ -854,6 +863,7 @@ namespace ClevoFanControl {
         private System.Windows.Forms.NotifyIcon icoTray;
         private System.Windows.Forms.ContextMenuStrip mnuMain;
         private System.Windows.Forms.ToolStripMenuItem mnuShowWindow;
+        private System.Windows.Forms.ToolStripMenuItem mnuAutostart;
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuExit;
         private System.Windows.Forms.Panel pnlCPUStats;
