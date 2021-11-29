@@ -798,9 +798,9 @@ namespace ClevoFanControl {
             tmrMain.Enabled = false;
             //computer.Close();
             //SetFansToMaximum();
-            fan?.SetFansAuto(0);
-            fan?.SetFansAuto(1);
-            fan?.SetFansAuto(2);
+            fan?.SetFansAuto(255);
+            //fan?.SetFansAuto(1);
+            //fan?.SetFansAuto(2);
             fan?.Dispose();
             SaveFanTableAndConfig();
             Close();
@@ -959,9 +959,10 @@ namespace ClevoFanControl {
                 //gpuFanTable = defaultGpuFanTable;
                 ////tabFanCurves.Enabled = false;
                 //tmrMain.Enabled = false;
-                fan?.SetFansAuto(0);
-                fan?.SetFansAuto(1);
-                fan?.SetFansAuto(2);
+                // pass 255 just set all fan auto
+                fan?.SetFansAuto(255);
+                //fan?.SetFansAuto(1);
+                //fan?.SetFansAuto(2);
                 mnuProfileManual.Checked = false;
                 mnuProfileDefault.Checked = true;
                 mnuProfileMax.Checked = false;
