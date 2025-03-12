@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Management;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//using OpenHardwareMonitor.Hardware;
+
 
 
 namespace ClevoFanControl {
@@ -67,6 +68,8 @@ namespace ClevoFanControl {
 
         int gpuBattTicks = 0;
         bool gpuBattMonitor = false;
+        bool manualOnBattMode = false;
+        string lastOnlineProfile = "";
 
         //bool fanUpdateTick = false;
 
@@ -150,6 +153,10 @@ namespace ClevoFanControl {
             ShowInTaskbar = false;
             FormBorderStyle = FormBorderStyle.None;
             Visible = false;
+
+            decimal newPowerLimit = (Convert.ToDecimal(trkGpuPower.Value) / 80) * 100000;
+            int newPowerLimitInt = Convert.ToInt32(Math.Round(newPowerLimit, 0));
+            SetGpuPowerLimit(newPowerLimitInt);
         }
 
         private void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
@@ -192,6 +199,34 @@ namespace ClevoFanControl {
                     currentGpuFan = 30;
                 }
             }
+
+            if (btnManualOnBatt.Checked && SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Offline && !manualOnBattMode) {
+                manualOnBattMode = true;
+                btnProfileManual.Checked = true;
+                btnProfileDefault.Checked = false;
+                btnProfileMax.Checked = false;
+                btnProfile50.Checked = false;
+                lblPowerLine.Text = "Battery";
+            }
+
+            if (btnManualOnBatt.Checked && SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Online && manualOnBattMode) {
+                manualOnBattMode = false;
+                btnProfileManual.Checked = false;
+                btnProfileDefault.Checked = false;
+                btnProfileMax.Checked = false;
+                btnProfile50.Checked = false;
+                if (lastOnlineProfile == "1") {
+                    btnProfileManual.Checked = true;
+                } else if (lastOnlineProfile == "2") {
+                    btnProfileDefault.Checked = true;
+                } else if (lastOnlineProfile == "3") {
+                    btnProfileMax.Checked = true;
+                } else if (lastOnlineProfile == "4") {
+                    btnProfile50.Checked = true;
+                }
+                lblPowerLine.Text = "AC Power";
+            }
+
 
             //if (currentCpuTemp >= 80 && currentGpuTemp >= 80) {
             //    currentCpuFan = 100;
@@ -609,6 +644,7 @@ namespace ClevoFanControl {
                 using (var sw = new StreamReader(configFile)) {
 
                     var profile = sw.ReadLine();
+                    lastOnlineProfile = profile;
                     if (profile == "1") {
                         btnProfileManual.Checked = true;
                         mnuProfileManual.Checked = true;
@@ -648,6 +684,9 @@ namespace ClevoFanControl {
                     txtGpuSafetyTemp.Value = Convert.ToInt32(sw.ReadLine());
                     gpuSafetyTemp = Convert.ToInt32(txtGpuSafetyTemp.Value);
                     btnGpuBattMonitor.Checked = Convert.ToBoolean(sw.ReadLine());
+                    trkGpuPower.Value = Convert.ToInt32(sw.ReadLine());
+                    lblGpuPowerLimit.Text = trkGpuPower.Value.ToString();
+                    btnManualOnBatt.Checked = Convert.ToBoolean(sw.ReadLine());
 
                 }
             } catch { }
@@ -657,7 +696,7 @@ namespace ClevoFanControl {
 
             if (!IsOnScreen(this)) {
                 wLeft = (Screen.PrimaryScreen.Bounds.Width / 2) - (619 / 2);
-                wTop = (Screen.PrimaryScreen.Bounds.Height / 2) - (641 / 2);
+                wTop = (Screen.PrimaryScreen.Bounds.Height / 2) - (645 / 2);
                 lastWLeft = wLeft;
                 lastWTop = wTop;
                 Left = wLeft;
@@ -719,6 +758,8 @@ namespace ClevoFanControl {
                 sw.WriteLine(txtCpuSafetyTemp.Value.ToString());
                 sw.WriteLine(txtGpuSafetyTemp.Value.ToString());
                 sw.WriteLine(btnGpuBattMonitor.Checked);
+                sw.WriteLine(trkGpuPower.Value);
+                sw.WriteLine(btnManualOnBatt.Checked);
             }
 
         }
@@ -879,6 +920,9 @@ namespace ClevoFanControl {
                 mnuProfileMax.Checked = false;
                 mnuProfile50.Checked = false;
                 clevoAutoFans = false;
+                if (SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Online) {
+                    lastOnlineProfile = "1";
+                }
             }
         }
 
@@ -896,6 +940,9 @@ namespace ClevoFanControl {
                 mnuProfileMax.Checked = false;
                 mnuProfile50.Checked = false;
                 clevoAutoFans = true;
+                if (SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Online) {
+                    lastOnlineProfile = "2";
+                }
             }
         }
 
@@ -909,6 +956,9 @@ namespace ClevoFanControl {
                 mnuProfileMax.Checked = true;
                 mnuProfile50.Checked = false;
                 clevoAutoFans = false;
+                if (SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Online) {
+                    lastOnlineProfile = "3";
+                }
             }
         }
 
@@ -922,6 +972,9 @@ namespace ClevoFanControl {
                 mnuProfileMax.Checked = false;
                 mnuProfile50.Checked = true;
                 clevoAutoFans = false;
+                if (SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Online) {
+                    lastOnlineProfile = "4";
+                }
             }
         }
 
@@ -1040,6 +1093,71 @@ namespace ClevoFanControl {
 
         private void tmrGui_Tick(object sender, EventArgs e) {
             UpdateGui();
+        }
+
+        private void trkGpuPower_Scroll(object sender, EventArgs e) {
+            lblGpuPowerLimit.Text = trkGpuPower.Value.ToString();
+        }
+
+        private void RefreshGpuActivePowerLimit() {
+            //ProcessStartInfo pLimitStartInfo = new ProcessStartInfo {
+            //    FileName = "C:\\Users\\Sukhamrit\\Documents\\Visual Studio\\Projects\\NvidiaPowerLimitControl\\NvidiaPowerLimitControl\\bin\\Release\\NvidiaPowerLimitControl.exe",
+            //    Arguments = "get",
+            //    UseShellExecute = true,
+            //    CreateNoWindow = true,
+            //    WindowStyle = ProcessWindowStyle.Hidden,
+            //};
+
+            //Process pLimit = new Process {
+            //    StartInfo = pLimitStartInfo
+            //};
+
+            //pLimit.Start();
+            //pLimit.WaitForExit();
+            //int pLimitReturn = pLimit.ExitCode;
+
+            //decimal watts = (Convert.ToDecimal(pLimitReturn) / 100000) * 80;
+            //trkGpuPower.Value = Convert.ToInt32(watts);
+            //lblGpuPowerLimit.Text = Math.Round(watts, 0).ToString();
+        }
+
+        private void SetGpuPowerLimit(int newPowerLimit) {
+            //ProcessStartInfo pLimitStartInfo = new ProcessStartInfo {
+            //    FileName = "C:\\Users\\Sukhamrit\\Documents\\Visual Studio\\Projects\\NvidiaPowerLimitControl\\NvidiaPowerLimitControl\\bin\\Release\\NvidiaPowerLimitControl.exe",
+            //    Arguments = "set " + newPowerLimit,
+            //    UseShellExecute = true,
+            //    CreateNoWindow = true,
+            //    WindowStyle = ProcessWindowStyle.Hidden,
+            //};
+
+            //Process pLimit = new Process {
+            //    StartInfo = pLimitStartInfo
+            //};
+
+            //pLimit.Start();
+            //pLimit.WaitForExit();
+            //int pLimitReturn = pLimit.ExitCode;
+
+            //if (pLimitReturn == 1005 || pLimitReturn == 1006) {
+            //    MessageBox.Show("Parameter incorrect.", "GPU Power Limit Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            //} else if (pLimitReturn == 1007) {
+            //    MessageBox.Show("Failed to change power limit.", "GPU Power Limit Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            //} else {
+            //    RefreshGpuActivePowerLimit();
+            //}
+        }
+
+        private void btnRefreshGpuPower_Click(object sender, EventArgs e) {
+            RefreshGpuActivePowerLimit();
+        }
+
+        private void btnSetGpuPower_Click(object sender, EventArgs e) {
+            decimal newPowerLimit = (Convert.ToDecimal(trkGpuPower.Value) / 80) * 100000;
+            int newPowerLimitInt = Convert.ToInt32(Math.Round(newPowerLimit, 0));
+            SetGpuPowerLimit(newPowerLimitInt);
+        }
+
+        private void btnManualOnBatt_CheckedChanged(object sender, EventArgs e) {
         }
     }
 

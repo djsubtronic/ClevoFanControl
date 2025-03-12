@@ -67,6 +67,13 @@ namespace ClevoFanControl {
             this.cpuPlot = new CurveEditorControl.PlotCanvasContainer();
             this.tabFanCurveGPU = new System.Windows.Forms.TabPage();
             this.gpuPlot = new CurveEditorControl.PlotCanvasContainer();
+            this.tabGpuSettings = new System.Windows.Forms.TabPage();
+            this.lblGpuPowerNote = new System.Windows.Forms.Label();
+            this.btnSetGpuPower = new System.Windows.Forms.Button();
+            this.btnRefreshGpuPower = new System.Windows.Forms.Button();
+            this.lblGpuPowerLimit = new System.Windows.Forms.Label();
+            this.lblGpuPowerLimitTitle = new System.Windows.Forms.Label();
+            this.trkGpuPower = new System.Windows.Forms.TrackBar();
             this.lblFanCurveHeader = new System.Windows.Forms.Label();
             this.pnlProfiles = new System.Windows.Forms.Panel();
             this.btnProfile50 = new System.Windows.Forms.RadioButton();
@@ -86,6 +93,8 @@ namespace ClevoFanControl {
             this.lblGpuSafetyTemp = new System.Windows.Forms.Label();
             this.btnGpuBattMonitor = new System.Windows.Forms.CheckBox();
             this.tmrGui = new System.Windows.Forms.Timer(this.components);
+            this.btnManualOnBatt = new System.Windows.Forms.CheckBox();
+            this.lblPowerLine = new System.Windows.Forms.Label();
             this.mnuMain.SuspendLayout();
             this.pnlCPUStats.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgStatIntel)).BeginInit();
@@ -101,6 +110,8 @@ namespace ClevoFanControl {
             this.tabFanCurves.SuspendLayout();
             this.tabFanCurveCPU.SuspendLayout();
             this.tabFanCurveGPU.SuspendLayout();
+            this.tabGpuSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkGpuPower)).BeginInit();
             this.pnlProfiles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtCpuSafetyTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtGpuSafetyTemp)).BeginInit();
@@ -477,6 +488,7 @@ namespace ClevoFanControl {
             // 
             this.tabFanCurves.Controls.Add(this.tabFanCurveCPU);
             this.tabFanCurves.Controls.Add(this.tabFanCurveGPU);
+            this.tabFanCurves.Controls.Add(this.tabGpuSettings);
             this.tabFanCurves.Font = new System.Drawing.Font("Open Sans Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabFanCurves.Location = new System.Drawing.Point(3, 34);
             this.tabFanCurves.Name = "tabFanCurves";
@@ -565,6 +577,82 @@ namespace ClevoFanControl {
             this.gpuPlot.XAxisItem09 = "80°";
             this.gpuPlot.XAxisItem10 = "90°";
             this.gpuPlot.PlotChanged += new System.Action<object, CurveEditorControl.PlotChangedEventArgs>(this.gpuPlot_PlotChanged);
+            // 
+            // tabGpuSettings
+            // 
+            this.tabGpuSettings.Controls.Add(this.lblGpuPowerNote);
+            this.tabGpuSettings.Controls.Add(this.btnSetGpuPower);
+            this.tabGpuSettings.Controls.Add(this.btnRefreshGpuPower);
+            this.tabGpuSettings.Controls.Add(this.lblGpuPowerLimit);
+            this.tabGpuSettings.Controls.Add(this.lblGpuPowerLimitTitle);
+            this.tabGpuSettings.Controls.Add(this.trkGpuPower);
+            this.tabGpuSettings.Location = new System.Drawing.Point(4, 29);
+            this.tabGpuSettings.Name = "tabGpuSettings";
+            this.tabGpuSettings.Size = new System.Drawing.Size(565, 284);
+            this.tabGpuSettings.TabIndex = 2;
+            this.tabGpuSettings.Text = "GPU Settings";
+            this.tabGpuSettings.UseVisualStyleBackColor = true;
+            // 
+            // lblGpuPowerNote
+            // 
+            this.lblGpuPowerNote.AutoSize = true;
+            this.lblGpuPowerNote.Font = new System.Drawing.Font("Open Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGpuPowerNote.Location = new System.Drawing.Point(26, 149);
+            this.lblGpuPowerNote.Name = "lblGpuPowerNote";
+            this.lblGpuPowerNote.Size = new System.Drawing.Size(482, 17);
+            this.lblGpuPowerNote.TabIndex = 5;
+            this.lblGpuPowerNote.Text = "Note: your configured power value will be automatically set on launch of this pro" +
+    "gram";
+            // 
+            // btnSetGpuPower
+            // 
+            this.btnSetGpuPower.Location = new System.Drawing.Point(359, 101);
+            this.btnSetGpuPower.Name = "btnSetGpuPower";
+            this.btnSetGpuPower.Size = new System.Drawing.Size(172, 31);
+            this.btnSetGpuPower.TabIndex = 4;
+            this.btnSetGpuPower.Text = "Set new limit";
+            this.btnSetGpuPower.UseVisualStyleBackColor = true;
+            this.btnSetGpuPower.Click += new System.EventHandler(this.btnSetGpuPower_Click);
+            // 
+            // btnRefreshGpuPower
+            // 
+            this.btnRefreshGpuPower.Location = new System.Drawing.Point(181, 101);
+            this.btnRefreshGpuPower.Name = "btnRefreshGpuPower";
+            this.btnRefreshGpuPower.Size = new System.Drawing.Size(172, 31);
+            this.btnRefreshGpuPower.TabIndex = 3;
+            this.btnRefreshGpuPower.Text = "Refresh from GPU";
+            this.btnRefreshGpuPower.UseVisualStyleBackColor = true;
+            this.btnRefreshGpuPower.Click += new System.EventHandler(this.btnRefreshGpuPower_Click);
+            // 
+            // lblGpuPowerLimit
+            // 
+            this.lblGpuPowerLimit.Location = new System.Drawing.Point(489, 62);
+            this.lblGpuPowerLimit.Name = "lblGpuPowerLimit";
+            this.lblGpuPowerLimit.Size = new System.Drawing.Size(42, 25);
+            this.lblGpuPowerLimit.TabIndex = 2;
+            this.lblGpuPowerLimit.Text = "100";
+            // 
+            // lblGpuPowerLimitTitle
+            // 
+            this.lblGpuPowerLimitTitle.AutoSize = true;
+            this.lblGpuPowerLimitTitle.Location = new System.Drawing.Point(26, 19);
+            this.lblGpuPowerLimitTitle.Name = "lblGpuPowerLimitTitle";
+            this.lblGpuPowerLimitTitle.Size = new System.Drawing.Size(187, 20);
+            this.lblGpuPowerLimitTitle.TabIndex = 1;
+            this.lblGpuPowerLimitTitle.Text = "GPU Power Limit (watts):";
+            // 
+            // trkGpuPower
+            // 
+            this.trkGpuPower.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(249)))), ((int)(((byte)(249)))));
+            this.trkGpuPower.Location = new System.Drawing.Point(30, 53);
+            this.trkGpuPower.Maximum = 105;
+            this.trkGpuPower.Minimum = 80;
+            this.trkGpuPower.Name = "trkGpuPower";
+            this.trkGpuPower.Size = new System.Drawing.Size(453, 45);
+            this.trkGpuPower.TabIndex = 0;
+            this.trkGpuPower.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trkGpuPower.Value = 80;
+            this.trkGpuPower.Scroll += new System.EventHandler(this.trkGpuPower_Scroll);
             // 
             // lblFanCurveHeader
             // 
@@ -655,7 +743,7 @@ namespace ClevoFanControl {
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(456, 599);
+            this.btnExit.Location = new System.Drawing.Point(456, 640);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(135, 30);
             this.btnExit.TabIndex = 14;
@@ -682,7 +770,7 @@ namespace ClevoFanControl {
             // 
             this.btnACFans.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnACFans.Font = new System.Drawing.Font("Open Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnACFans.Location = new System.Drawing.Point(148, 599);
+            this.btnACFans.Location = new System.Drawing.Point(162, 599);
             this.btnACFans.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.btnACFans.Name = "btnACFans";
             this.btnACFans.Size = new System.Drawing.Size(130, 30);
@@ -767,7 +855,7 @@ namespace ClevoFanControl {
             // 
             this.btnGpuBattMonitor.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnGpuBattMonitor.Font = new System.Drawing.Font("Open Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGpuBattMonitor.Location = new System.Drawing.Point(284, 599);
+            this.btnGpuBattMonitor.Location = new System.Drawing.Point(312, 599);
             this.btnGpuBattMonitor.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.btnGpuBattMonitor.Name = "btnGpuBattMonitor";
             this.btnGpuBattMonitor.Size = new System.Drawing.Size(130, 30);
@@ -783,11 +871,38 @@ namespace ClevoFanControl {
             this.tmrGui.Interval = 1000;
             this.tmrGui.Tick += new System.EventHandler(this.tmrGui_Tick);
             // 
+            // btnManualOnBatt
+            // 
+            this.btnManualOnBatt.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnManualOnBatt.Font = new System.Drawing.Font("Open Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnManualOnBatt.Location = new System.Drawing.Point(462, 599);
+            this.btnManualOnBatt.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.btnManualOnBatt.Name = "btnManualOnBatt";
+            this.btnManualOnBatt.Size = new System.Drawing.Size(130, 30);
+            this.btnManualOnBatt.TabIndex = 26;
+            this.btnManualOnBatt.Text = "Manual On Batt";
+            this.btnManualOnBatt.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnManualOnBatt.UseVisualStyleBackColor = true;
+            this.btnManualOnBatt.CheckedChanged += new System.EventHandler(this.btnManualOnBatt_CheckedChanged);
+            // 
+            // lblPowerLine
+            // 
+            this.lblPowerLine.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblPowerLine.Font = new System.Drawing.Font("Open Sans", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPowerLine.Location = new System.Drawing.Point(525, 568);
+            this.lblPowerLine.Name = "lblPowerLine";
+            this.lblPowerLine.Size = new System.Drawing.Size(67, 19);
+            this.lblPowerLine.TabIndex = 27;
+            this.lblPowerLine.Text = "AC Power";
+            this.lblPowerLine.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // frmMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(609, 657);
+            this.ClientSize = new System.Drawing.Size(609, 681);
+            this.Controls.Add(this.lblPowerLine);
+            this.Controls.Add(this.btnManualOnBatt);
             this.Controls.Add(this.btnGpuBattMonitor);
             this.Controls.Add(this.txtGpuSafetyTemp);
             this.Controls.Add(this.lblGpuSafetyTemp2);
@@ -835,6 +950,9 @@ namespace ClevoFanControl {
             this.tabFanCurves.ResumeLayout(false);
             this.tabFanCurveCPU.ResumeLayout(false);
             this.tabFanCurveGPU.ResumeLayout(false);
+            this.tabGpuSettings.ResumeLayout(false);
+            this.tabGpuSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkGpuPower)).EndInit();
             this.pnlProfiles.ResumeLayout(false);
             this.pnlProfiles.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtCpuSafetyTemp)).EndInit();
@@ -906,6 +1024,15 @@ namespace ClevoFanControl {
         private CurveEditorControl.PlotCanvasContainer cpuPlot;
         private CurveEditorControl.PlotCanvasContainer gpuPlot;
         private System.Windows.Forms.Timer tmrGui;
+        private System.Windows.Forms.TabPage tabGpuSettings;
+        private System.Windows.Forms.TrackBar trkGpuPower;
+        private System.Windows.Forms.Label lblGpuPowerLimit;
+        private System.Windows.Forms.Label lblGpuPowerLimitTitle;
+        private System.Windows.Forms.Button btnRefreshGpuPower;
+        private System.Windows.Forms.Button btnSetGpuPower;
+        private System.Windows.Forms.Label lblGpuPowerNote;
+        private System.Windows.Forms.CheckBox btnManualOnBatt;
+        private System.Windows.Forms.Label lblPowerLine;
     }
 }
 
